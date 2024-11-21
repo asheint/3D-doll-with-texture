@@ -468,8 +468,35 @@ void display(void) {
 	if (axesOn == 1)
 		drawAxes();
 
-	glScalef(2.0, 2.0, 2.0);
+	glPushMatrix();
+	glTranslatef(0.0, 0.0, 0.0);
+	glScalef(1.0, 1.0, 1.0);
 	drawDoll();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(3.0, 3.0, 0.0);
+	glScalef(1.0, 1.0, 1.0);
+	drawDoll();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(3.0, -3.0, 0.0);
+	glScalef(1.0, 1.0, 1.0);
+	drawDoll();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-3.0, 3.0, 0.0);
+	glScalef(1.0, 1.0, 1.0);
+	drawDoll();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-3.0, -3.0, 0.0);
+	glScalef(1.0, 1.0, 1.0);
+	drawDoll();
+	glPopMatrix();
 
 	glPopMatrix();
 	glutSwapBuffers();
