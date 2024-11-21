@@ -7,6 +7,8 @@ constexpr float PI = 3.14159265358979323846;
 
 int width;
 int height;
+unsigned char* image;
+GLuint tex; //texture ID
 
 //variables to move the camera
 GLfloat camX = 0.0; GLfloat camY = 0.0; GLfloat camZ = 0.0;
@@ -59,10 +61,49 @@ void drawAxes() {
 	glEnd();
 }
 
+void loadTextures() {
+	image = SOIL_load_image("coattexure.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+
+	if (image == NULL) {
+		printf("Error : %s", SOIL_last_result());
+	}
+
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+}
+
+/*
+//Read the image to texture image
+void loadTextures() {
+	//directly loads an image file and generates an OpenGL texture object from it
+	tex = SOIL_load_OGL_texture(
+		"coattexure.jpg",  // Replace with the path to your texture file
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
+	);
+
+	if (!tex) {
+		printf("Texture loading failed: %s\n", SOIL_last_result());
+	}
+
+	// Set texture parameters
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+}
+*/
+
 void init(void) {
 	glClearColor(0.0, 0.8, 0.8, 1.0);
 	glClearDepth(1.0);
 	glEnable(GL_DEPTH_TEST);
+	loadTextures();
 }
 
 //Doll Components
@@ -116,9 +157,12 @@ void armleft()
 	glRotatef(-50, 1, 0, 0);
 
 	GLUquadric* quad = gluNewQuadric();
+	gluQuadricTexture(quad, GL_TRUE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, tex);
 	gluCylinder(quad, .15, .15, .48, 30, 6);
+	glDisable(GL_TEXTURE_2D);
 
-	gluDeleteQuadric(quad);
 	glPopMatrix();
 }
 
@@ -130,9 +174,12 @@ void armright()
 	glRotatef(-130, 1, 0, 0);
 
 	GLUquadric* quad = gluNewQuadric();
+	gluQuadricTexture(quad, GL_TRUE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, tex);
 	gluCylinder(quad, .15, .15, .48, 30, 6);
+	glDisable(GL_TEXTURE_2D);
 
-	gluDeleteQuadric(quad);
 	glPopMatrix();
 }
 
@@ -273,9 +320,12 @@ void BellyCoat()
 	glRotatef(90.0, 1, 0, 0);
 
 	GLUquadric* quad = gluNewQuadric();
+	gluQuadricTexture(quad, GL_TRUE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, tex);
 	gluCylinder(quad, .6, .8, 1, 100, 100);
+	glDisable(GL_TEXTURE_2D);
 
-	gluDeleteQuadric(quad);
 	glPopMatrix();
 }
 
@@ -500,6 +550,7 @@ void keyboard(unsigned char key, int x, int y) {
 		axesOn = 1;
 	if (key == 'a')
 		axesOn = 0;
+
 
 
 	glutPostRedisplay();
